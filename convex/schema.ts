@@ -8,11 +8,21 @@ const schema = defineSchema({
         body: v.string(),
         userId: v.id("users"),
     }).index("by_userId", ["userId"]),
-    // messages:defineTable({
-    //     noteId:v.id("notes"),
-    //     role:v.string(),
-    //     content:v.string(),
-    // }).index("by_noteId",["noteId"])
+
+    noteEmbeddings: defineTable({
+        content: v.string(),
+        embedding: v.array(v.float64()),
+        noteId: v.id("notes"),
+        userId: v.id("users"),
+    }).index("by_noteId", ["noteId"])
+        .vectorIndex("by_embedding", {
+            vectorField: "embedding",
+            dimensions: 1536,
+
+            filterFields: ["userId"],
+        })
+    ,
+
 })
 
 export default schema;
