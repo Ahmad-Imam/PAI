@@ -65,6 +65,14 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
     maxSteps: 3,
   });
 
+  useEffect(() => {
+    function handleNotesUpdated() {
+      setMessages(initialMessages);
+    }
+    window.addEventListener("notes:updated", handleNotesUpdated as any);
+    return () => window.removeEventListener("notes:updated", handleNotesUpdated as any);
+  }, [setMessages]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const isProcessing = status === "submitted" || status === "streaming";

@@ -22,18 +22,19 @@ http.route({
 
         const { messages }: { messages: UIMessage[] } = await req.json();
 
-        const lastMessages = messages.slice(-10);
+                        const lastMessages = messages.slice(-10);
 
         const result = streamText({
             model: openai("gpt-4o"),
-            system: `
-      You are a helpful assistant that can search through the user's notes.
-      Use the information from the notes to answer questions and provide insights.
-      If the requested information is not available, respond with "Sorry, I can't find that information in your notes".
-      You can use markdown formatting like links, bullet points, numbered lists, and bold text.
-      Provide links to relevant notes using this relative URL structure (omit the base URL): '/notes?noteId=<note-id>'.
-      Keep your responses concise and to the point.
-      `,
+        system: `
+    You are a helpful assistant that searches the user's notes.
+    For each user message, call the tool exactly once:
+    - Use findRelevantNotes(query) to fetch the latest data.
+    - Prefer fresh tool results over anything said earlier in the chat.
+    - After receiving tool results, provide a final answer; do not call the tool again in the same turn.
+    If the requested information is not available in the tool results, reply: "Sorry, I can't find that information in your notes".
+    Use concise markdown. Link to notes using relative URLs: '/notes?noteId=<note-id>'.
+    `,
             messages: convertToModelMessages(lastMessages),
             tools: {
                 findRelevantNotes: tool({
@@ -54,7 +55,7 @@ http.route({
                         );
 
                         return relevantNotes.map((note) => ({
-                            id: note._id,
+                            id: note._id.toString(),
                             title: note.title,
                             body: note.body,
                             creationTime: note._creationTime,

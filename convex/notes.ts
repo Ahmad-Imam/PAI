@@ -116,4 +116,51 @@ export const fetchNotesByEmbeddingIds = internalQuery({
 
         return results;
     },
-}); 
+});
+
+export const updateNoteWithEmbeddings = internalMutation({
+    args: {
+        noteId: v.id("notes"),
+        title: v.string(),
+        body: v.string(),
+        userId: v.id("users"),
+        embeddings: v.array(
+            v.object({
+                embedding: v.array(v.float64()),
+                content: v.string(),
+            })
+        ),
+    },
+    returns: v.id("notes"),
+    handler: async (ctx, args) => {
+        const note = await ctx.db.get(args.noteId);
+        if (!note) {
+            throw new Error("Note not found");
+        }
+        if (note.userId !== args.userId) {
+            throw new Error("User is not authorized to update this note");
+        }
+
+        await ctx.db.patch(args.noteId, { title: args.title, body: args.body });
+
+        const existingEmbeddings = await ctx.db
+            .query("noteEmbeddings")
+            .withIndex("by_noteId", (q) => q.eq("noteId", args.noteId))
+            .collect();
+
+        for (const embedding of existingEmbeddings) {
+            await ctx.db.delete(embedding._id);
+        }
+
+        for (const embeddingData of args.embeddings) {
+            await ctx.db.insert("noteEmbeddings", {
+                content: embeddingData.content,
+                embedding: embeddingData.embedding,
+                noteId: args.noteId,
+                userId: args.userId,
+            });
+        }
+
+        return args.noteId;
+    },
+});
