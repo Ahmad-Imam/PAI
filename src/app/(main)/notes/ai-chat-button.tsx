@@ -69,9 +69,9 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
     function handleNotesUpdated() {
       setMessages(initialMessages);
     }
-    window.addEventListener("notes:updated", handleNotesUpdated as any);
+    window.addEventListener("notes:updated", handleNotesUpdated);
     return () =>
-      window.removeEventListener("notes:updated", handleNotesUpdated as any);
+      window.removeEventListener("notes:updated", handleNotesUpdated);
   }, [setMessages]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
