@@ -8,7 +8,7 @@ The live chatbot link might not always give results because of expired Open AI c
 
 ## Information
 
-PAI, built with Next.js, Convex and AI SDK is a simple chatbot utilizing LLM and RAG to get information about the user created notees. It uses OPEN AI Vector embedding model to create vector embeddings ConvexDB to store them.
+PAI, built with Next.js, Convex and AI SDK is a simple chatbot utilizing LLM and RAG to get information about the user created notes. It uses OPEN AI Vector embedding model to create vector embeddings ConvexDB to store them.
 
 The LLM model used is GPT-4.1-nano. By utilizing RAG, the model is capable of answering questions and providing updates to the user created notes. Whenever user edits a new note, new embeddings are automatically created and user can ask the assistant about the latest information.
 

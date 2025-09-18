@@ -25,7 +25,7 @@ http.route({
         const lastMessages = messages.slice(-10);
 
         const result = streamText({
-            model: openai("gpt-4o"),
+            model: openai("gpt-4.1-nano"),
             system: `
     You are a helpful assistant that searches the user's notes.
     For each user message, call the tool exactly once:
