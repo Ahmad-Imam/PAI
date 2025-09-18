@@ -131,7 +131,9 @@ function EditNoteDialog({
       toast.success("Note updated");
       onOpenChange(false);
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("notes:updated", { detail: { noteId: note._id } }));
+        window.dispatchEvent(
+          new CustomEvent("notes:updated", { detail: { noteId: note._id } })
+        );
       }
     } catch (e) {
       console.error(e);

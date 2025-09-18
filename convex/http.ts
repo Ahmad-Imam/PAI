@@ -22,11 +22,11 @@ http.route({
 
         const { messages }: { messages: UIMessage[] } = await req.json();
 
-                        const lastMessages = messages.slice(-10);
+        const lastMessages = messages.slice(-10);
 
         const result = streamText({
             model: openai("gpt-4o"),
-        system: `
+            system: `
     You are a helpful assistant that searches the user's notes.
     For each user message, call the tool exactly once:
     - Use findRelevantNotes(query) to fetch the latest data.
